@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { width: 300px; font-family: 'Segoe UI', sans-serif; padding: 15px; }
+        h2 { margin-top: 0; text-align: center; }
+        .status_box { padding: 15px; border-radius: 5px; text-align: center; margin-bottom: 15px; }
+        .legit { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .phishing { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .analyzing { background-color: #cce5ff; color: #004085; border: 1px solid #b8daff; }
+        .idle { background-color: #f0f0f0; color: #333; border: 1px solid #ddd; }
+        button { width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+    <h2>Analýza stránky</h2>
+    
+    <div id="status_container" class="status_box idle">
+        <span id="status_text">Neanalyzováno</span>
+        <div id="probability" style="font-size: 0.9em; margin-top: 5px;"></div>
+    </div>
+
+    <label><input type="checkbox" id="auto_analyze"> Automatická analýza</label>
+    <button id="btn_manual">Spustit analýzu</button>
+
+    <script src="popup.js"></script>
+</body>
+</html>

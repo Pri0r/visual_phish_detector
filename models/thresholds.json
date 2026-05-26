@@ -1,0 +1,6 @@
+{
+    "favicon_threshold": 0.859375,
+    "logo_threshold": 0.8999868757584516,
+    "cnn_threshold": 0.4481313228607178,
+    "gnn_threshold": 0.48257210850715637
+}

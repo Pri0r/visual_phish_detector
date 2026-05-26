@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Detector</title>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, sans-serif;
+            background-color: #0d1117;
+            color: #e2e8f0;
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        main {
+            width: 100%;
+            max-width: 800px;
+            margin-top: 4vh;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #f8fafc;
+        }
+
+        form {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            border-color: #3b82f6;
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+        button:disabled {
+            background: #475569;
+            cursor: wait;
+        }
+
+        #results {
+            padding: 1rem;
+            border-radius: 6px;
+            background: #1e293b;
+            font-family: ui-monospace, monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        .phish { border-left: 4px solid #ef4444; }
+        .legit { border-left: 4px solid #22c55e; }
+        .error { border-left: 4px solid #eab308; }
+
+        .loading {
+            display: block !important;
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            border-left: 4px solid #3b82f6;
+            color: #94a3b8;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Visual Phishing Detector</h1>
+        
+        <form id="analysisForm">
+            <input type="text" id="urlInput" name="url" placeholder="https://example.com" required>
+            <label style="display: flex; align-items: center;">
+                <input type="checkbox" id="manualCheckbox" style="width: auto;">
+                Manual
+            </label>
+            <button type="submit" id="analyzeButton">Analyze</button>
+        </form>
+
+        <div id="results"></div>
+    </main>
+
+    <script>
+        // get elements
+        const form = document.getElementById("analysisForm");
+        const urlInput = document.getElementById("urlInput");
+        const resultsDiv = document.getElementById("results");
+        const analyzeButton = document.getElementById("analyzeButton");
+
+        const API_URL = "/analyze"; 
+        const CLIENT_TIMEOUT_MS = 120000;
+
+        form.addEventListener("submit", async function(event)
+        {
+            event.preventDefault(); 
+            // get url + manual checkbox
+            const url = urlInput.value;
+            const isManual = document.getElementById("manualCheckbox").checked;
+            // disable input until analysis is complete
+            analyzeButton.disabled = true;
+            analyzeButton.textContent = "Analyzing...";
+            resultsDiv.innerHTML = "";
+            resultsDiv.className = "";
+
+            try
+            {
+                // send anylysis request with a timer
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), CLIENT_TIMEOUT_MS);
+                const response = await fetch(API_URL, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ url: url, manual: isManual }),
+                        signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+
+                // something went wrong
+                if (!response.ok) 
+                {
+                    const errorText = await response.text();
+                    throw new Error(`Server error ${response.status}: ${errorText}`);
+                }
+
+                // show the result
+                const data = await response.json();
+                resultsDiv.textContent = JSON.stringify(data, null, 2);
+                if (data.verdict === "phishing")
+                    resultsDiv.classList.add("phish");
+                else
+                    resultsDiv.classList.add("legit");
+
+            }
+            catch (error) 
+            {
+                console.error("Error during URL analysis:", error);
+                // timer ran out, analysis was aborted
+                if (error.name === "AbortError" || error.message.includes("Časový limit"))
+                    resultsDiv.textContent = `Error: Timelimit ran out: (${CLIENT_TIMEOUT_MS / 1000}s).`;
+                else
+                    resultsDiv.textContent = `Error: ${error.message || error.name}`;
+
+                resultsDiv.classList.add("error");
+            }
+            // reset input elements
+            finally 
+            {
+                analyzeButton.disabled = false;
+                analyzeButton.textContent = "Analyze";
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "Visual Phishing Detector",
+  "version": "1.0",
+  "description": "Rozšíření pro detekci phishingu na základě vizuální podobnosti.",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": [
+    "http://localhost:8000/*" 
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/gray.png",
+      "48": "icons/gray.png",
+      "128": "icons/gray.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "name": "fitlayout-puppeteer",
+  "version": "1.0.0",
+  "description": "Puppeteer-based web page renderer for FitLayout",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/FitLayout/fitlayout-puppeteer.git"
+  },
+  "author": "Radek Burget <burgetr@fit.vutbr.cz>",
+  "license": "LGPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/FitLayout/fitlayout-puppeteer/issues"
+  },
+  "homepage": "https://github.com/FitLayout/fitlayout-puppeteer#readme",
+  "dependencies": {
+    "puppeteer": "^23.9.0",
+    "yargs": "^17.7.2"
+  }
+}
