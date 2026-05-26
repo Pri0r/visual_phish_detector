@@ -2,6 +2,7 @@
 Phishing detection system based on visual website similarity. Combines deep learning with brand identity verification using logos and favicons.
 
 ## Usage
+Make sure that large files are present - either clone with Git LFS installed or download as zip.
 
 1. Start the server:
 ```bash
