@@ -1,3 +1,6 @@
+# Visual Phishing Detector
+Phishing detection system based on visual website similarity. Combines deep learning with brand identity verification using logos and favicons.
+
 ## Usage
 
 1. Start the server:
